@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+	namespace=""  命名空间，防止所有的包名不能重复
+	值的规则：接口的完全包名.接口名
+ -->
+<mapper namespace="dao.UserMapper">
+<select id="getlist" resultType="User">
+		select * from smbms_user
+	</select>
+	<insert id="add" parameterType="User">
+		INSERT INTO
+		`smbms_user`(userCode,userName,userPassword,gender,birthday,phone,address,userRole,createdBy,creationDate,modifyBy,modifyDate)
+		VALUES (#{userName}, '系统管理员', #{phone},'1', '1983-10-10',
+		'13688889999', '北京市海淀区成府路207号', '1', '1', '2013-03-21 16:52:07', null,
+		null);
+	</insert>
+	<select id="like" resultType="User" parameterType="string">
+		select * from
+		smbms_user WHERE userName like CONCAT('%',#{userName},'%')
+	</select>
+	<select id="Login" resultType="int" parameterType="User">
+		SELECT
+		count(*) FROM smbms_user WHERE userCode=#{userCode} AND
+		userPassword=#{userPassword}
+	</select>
+	<select id="Billselect" resultType="Bill" parameterType="String">
+		SELECT * FROM smbms_bill where 1=1
+		<if test="productName!=null and productName!='' and productName!=0">
+	and providerId=#{productName}
+	</if>
+	<if test="isPayment!=null and isPayment!=0">
+	and isPayment=#{isPayment}
+	</if>
+	<if test="pag!=null and pag>-1">
+	LIMIT ${pag},2
+	</if>
+	</select>
+	<select id="Providerselect" resultType="Provider">
+		SELECT * FROM
+		smbms_provider
+	</select>
+	<select id="Userselect" resultType="User">
+		SELECT * FROM smbms_user
+	</select>
+	<select id="providerList" resultType="Provider">
+	SELECT * FROM smbms_provider
+	</select>
+	<select id="BillByid" resultType="string" parameterType="string">
+	SELECT billCode FROM smbms_bill WHERE billCode=#{billCode}
+	</select>
+	<select id="Billdjy" resultType="Bill" parameterType="string">
+	SELECT * FROM smbms_bill WHERE id=#{id}
+	</select>
+	<insert id="billadd" parameterType="Bill">
+	INSERT INTO
+	smbms_bill(billCode,productName,productUnit,productCount,totalPrice,providerId,isPayment,creationDate)
+	VALUES(#{billCode},#{productName},#{productUnit},#{productCount},#{totalPrice},#{providerId},#{isPayment},NOW())
+	</insert>
+	<delete id="delete1" parameterType="string">
+	DELETE FROM smbms_bill WHERE id=#{id}
+	</delete>
+	<update id="uodate1" parameterType="Bill">
+	UPDATE smbms_bill SET billCode=#{billCode},productName=#{productName},productUnit=#{productUnit},productCount=#{productCount},totalPrice=#{totalPrice},isPayment=#{isPayment} WHERE id=#{id}
+	</update>
+</mapper>
